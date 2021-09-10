@@ -28,15 +28,19 @@ jobs:
         run: cargo build --release
       - name: Archive as .tar.gz (Linux)
         if: matrix.os == 'ubuntu-latest'
-        run: tar cfz htmlq-x86_64-linux.tar.gz -C target/release htmlq
+        run: tar cf htmlq-x86_64-linux.tar.gz -C target/release htmlq -I 'gzip --best'
       - name: Archive as .tar.gz (macOS)
         if: matrix.os == 'macos-latest'
-        run: tar cfz htmlq-x86_64-darwin.tar.gz -C target/release htmlq
-      - name: Archive as .tar.gz (Windows)
+        run: |
+          tar cf htmlq-x86_64-darwin.tar -C target/release htmlq
+          gzip --best htmlq-x86_64-darwin.tar
+      - name: Archive as .zip (Windows)
         if: matrix.os == 'windows-latest'
         shell: bash
-        run: tar cfz htmlq-x86_64-windows.tar.gz -C target/release htmlq.exe
+        run: zip -9 -j htmlq-x86_64-windows.zip target/release/htmlq.exe
       - name: Publish
         uses: softprops/action-gh-release@v1
         with:
-          files: htmlq*.tar.gz
+          files: |
+            htmlq*.tar.gz
+            htmlq*.zip
