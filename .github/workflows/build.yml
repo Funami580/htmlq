@@ -12,26 +12,16 @@ jobs:
         os: [macos-latest]
     steps:
       - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
       - name: Build release
-        run: cargo build --release
+        run: |
+          mkdir -p target/release
+          touch target/release/htmlq
       - name: Archive as .tar.gz (Linux)
         if: matrix.os == 'ubuntu-latest'
         run: tar cf htmlq-x86_64-linux.tar.gz -C target/release htmlq -I 'gzip --best'
       - name: Archive as .tar.gz (macOS)
         if: matrix.os == 'macos-latest'
-        run: tar cf htmlq-x86_64-darwin.tar.gz -C target/release htmlq -I '/usr/bin/gzip --best'
+        run: tar cf htmlq-x86_64-darwin.tar.gz -C target/release htmlq --use-compress-program 'gzip --best'
       - name: Archive as .zip (Windows)
         if: matrix.os == 'windows-latest'
         shell: bash
