@@ -31,7 +31,13 @@ jobs:
         run: tar cf htmlq-x86_64-linux.tar.gz -C target/release htmlq -I 'gzip --best'
       - name: Archive as .tar.gz (macOS)
         if: matrix.os == 'macos-latest'
-        run: tar cf htmlq-x86_64-darwin.tar.gz -C target/release htmlq -I 'gzip --best'
+        run: |
+          ls -1 /usr/bin
+          type tar
+          gzip -V
+          type gzip
+          /usr/bin/gzip -V
+          tar cf htmlq-x86_64-darwin.tar.gz -C target/release htmlq -I "gzip --best"
       - name: Archive as .zip (Windows)
         if: matrix.os == 'windows-latest'
         shell: bash
